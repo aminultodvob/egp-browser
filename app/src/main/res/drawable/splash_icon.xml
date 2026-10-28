@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ splash icon: the drawable fills a 240dp box of which only the central 160dp circle
+     is visible, so the logo is inset to fit fully inside that circle. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/brand_logo"
+    android:inset="22%" />

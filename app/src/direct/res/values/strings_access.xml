@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="legal_support">Support</string>
+    <string name="access_tagline">Bangladesh\'s e-GP portal, made easy on your phone</string>
+    <string name="access_status_lifetime">Lifetime access</string>
+    <string name="access_status_expired">Trial ended</string>
+    <plurals name="access_trial_days_left">
+        <item quantity="one">Free trial: %d day left</item>
+        <item quantity="other">Free trial: %d days left</item>
+    </plurals>
+
+    <string name="access_title_not_configured">Service not configured</string>
+    <string name="access_message_not_configured">This build has no account server configured. Contact the app\'s publisher.</string>
+    <string name="access_title_signed_out">Start with a free 7-day trial</string>
+    <string name="access_message_signed_out">Sign in with Google. Your trial and purchase are tied to your account, so you can restore them on a new phone.</string>
+    <string name="access_title_checking">Checking your access…</string>
+    <string name="access_message_checking">Connect to the internet to confirm your account.</string>
+    <string name="access_title_not_started">Your free trial is ready</string>
+    <string name="access_message_not_started">7 days of full access. No payment details needed.</string>
+    <string name="access_message_trial">Trial ends on %1$s. Unlock lifetime access any time.</string>
+    <string name="access_title_expired">Your free trial has ended</string>
+    <string name="access_message_expired">Unlock lifetime access with a one-time payment of ৳250.</string>
+    <string name="access_message_trial_used">The free trial was already used with this account or device.</string>
+    <string name="access_title_lifetime">Lifetime access active</string>
+    <string name="access_message_lifetime">Thank you! All features are unlocked on any phone where you sign in.</string>
+
+    <string name="access_action_google">Continue with Google</string>
+    <string name="access_action_start_trial">Start free trial</string>
+    <string name="access_action_buy">Unlock lifetime · ৳250</string>
+    <string name="access_action_browse">Continue to e-GP</string>
+    <string name="access_action_check">Check again</string>
+
+    <string name="access_payment_check">Check</string>
+    <string name="access_payment_waiting_title">Waiting for payment</string>
+    <string name="access_payment_waiting_message">Complete the payment in the PayStation page. This updates automatically.</string>
+    <string name="access_payment_processing_message">Confirming with PayStation…</string>
+    <string name="access_payment_paid_title">Payment confirmed</string>
+    <string name="access_payment_failed_title">Payment not completed</string>
+    <string name="access_payment_failed_message">No money was taken for lifetime access. You can try again.</string>
+    <string name="access_payment_review_title">Payment under review</string>
+    <string name="access_payment_review_message">We could not confirm it automatically. Contact support with invoice %1$s.</string>
+    <string name="access_payment_offline">PayStation is not reachable right now. We will keep checking.</string>
+    <string name="access_payment_success_dialog">Lifetime access is now active. Enjoy e-GP Browser!</string>
+
+    <string name="access_features_title">Included with e-GP Browser</string>
+    <string name="access_features">✓  Secure browser locked to the official e-GP portal\n✓  Desktop site mode for tenders and wide tables\n✓  Tap-friendly menus, uploads and downloads\n✓  Pop-up windows, zoom, full screen and offline recovery\n✓  All future updates of the app</string>
+    <string name="access_fee_explanation">The ৳250 fee is for this independent app and its features. It is not a government fee: the e-GP portal itself remains free to use in any browser. One-time payment, no subscription, no automatic renewal.</string>
+    <string name="access_independent_notice">e-GP Browser is an independent app. It is not affiliated with the Government of Bangladesh, BPPA or CPTU.</string>
+
+    <string name="access_sign_out">Sign out</string>
+    <string name="access_delete_account">Delete account</string>
+    <string name="access_signed_in_as">Signed in as %1$s</string>
+    <string name="access_sign_out_message">You can sign in again any time to restore your trial or lifetime access.</string>
+    <string name="access_delete_title">Delete your account?</string>
+    <string name="access_delete_message">This permanently deletes your account and personal data. Lifetime access bought with this account will be lost and the free trial cannot be used again. Payment records are kept without your name, as required for accounting.</string>
+    <string name="access_delete_confirm">Delete permanently</string>
+    <string name="access_deleted">Your account was deleted</string>
+
+    <string name="access_error_network">No connection. Check your internet and try again.</string>
+    <string name="access_error_signed_out">Your session ended. Sign in again.</string>
+    <string name="access_error_no_google_account">Add a Google account to this phone (Settings → Accounts), then try again.</string>
+    <string name="access_error_google">Google sign-in failed. Make sure Google Play services are up to date.</string>
+    <string name="access_error_generic">Something went wrong. Try again.</string>
+    <string name="access_error_checkout">The payment page could not be opened.</string>
+    <string name="support_not_configured">Support contact is not configured in this build.</string>
+
+    <string name="purchase_title">Unlock lifetime access</string>
+    <string name="purchase_price">৳250</string>
+    <string name="purchase_price_note">One-time payment · Lifetime · No subscription</string>
+    <string name="purchase_name">Your name</string>
+    <string name="purchase_phone">Mobile number</string>
+    <string name="purchase_phone_helper">11 digits, e.g. 01712345678. Required by PayStation.</string>
+    <string name="purchase_phone_invalid">Enter an 11-digit Bangladeshi mobile number</string>
+    <string name="purchase_name_invalid">Enter your name</string>
+    <string name="purchase_security_note">You pay on PayStation\'s secure page (bKash, Nagad, Rocket, cards and more). e-GP Browser never sees your PIN, OTP or card details.</string>
+    <string name="purchase_agree">I agree to the Terms of use and the Payment &amp; refund policy</string>
+    <string name="purchase_pay">Pay ৳250 with PayStation</string>
+</resources>

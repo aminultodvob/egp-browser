@@ -1,0 +1,6 @@
+# Unix line endings everywhere (scripts and Docker files run on Linux); Windows batch files keep CRLF.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.webp binary
+*.jar binary

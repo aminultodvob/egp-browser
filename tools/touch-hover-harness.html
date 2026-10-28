@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+  Behavioural test for app/src/main/assets/touch_hover.js against the portal's real menu script.
+
+  Open in Chrome (file://). It loads ddlevelsmenu.js and theme_1.css from the live portal, builds
+  menus with the same markup pattern as the signed-in e-GP header, then replays the event
+  sequence Android Chrome/WebView produces for a tap (touchstart, touchend, mouseout/mouseover,
+  click). Add ?script=0 to run without the fix and reproduce the original bug.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Touch hover harness</title>
+<link rel="stylesheet" href="https://www.eprocure.gov.bd/resources/css/theme_1.css">
+<script src="https://www.eprocure.gov.bd/resources/js/ddlevelsmenu.js"></script>
+<style>
+  body { font: 13px sans-serif; margin: 8px; }
+  #results { margin-top: 260px; white-space: pre; font-family: monospace; }
+  .pass { color: #060; } .fail { color: #b00; font-weight: bold; }
+</style>
+</head>
+<body>
+<div id="ddtopmenubar" class="topMenu_1">
+  <ul>
+    <li><a id="home" href="#home">Home</a></li>
+    <li><a id="tender" href="#tender-page" rel="ddsubmenu1">Tender</a></li>
+    <li><a id="cms" href="#cms-page" rel="ddsubmenu2">CMS</a></li>
+  </ul>
+</div>
+<script>ddlevelsmenu.setup("ddtopmenubar", "topbar");</script>
+
+<ul id="ddsubmenu1" class="ddsubmenustyle">
+  <li><a id="mytender" href="#my-tender">My Tender</a></li>
+  <li id="moreLi"><a id="more" href="#more-page">More</a>
+    <ul id="nestedUl"><li><a id="nestedLeaf" href="#nested-leaf">Nested leaf</a></li></ul>
+  </li>
+</ul>
+<ul id="ddsubmenu2" class="ddsubmenustyle">
+  <li><a id="cmsItem" href="#cms-item">Contract list</a></li>
+</ul>
+
+<div class="dropdown" id="payDropdown" style="margin-top:12px">
+  <button class="dropbtn" id="payBtn">Payment</button>
+  <div class="dropdown-content"><a id="payItem" href="#pay-item">Pay</a></div>
+</div>
+<p id="outside">Outside area</p>
+<div id="results">running…</div>
+
+<script>
+(function () {
+  var withScript = !/[?&]script=0/.test(location.search);
+  var log = [];
+  var lastHover = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var visible = function (el) { return getComputedStyle(el).visibility === 'visible'; };
+  var shown = function (el) { return getComputedStyle(el).display !== 'none'; };
+
+  // Mirrors Chrome's emulated mouse sequence for a single-finger tap.
+  function tap(el) {
+    var t = new Touch({ identifier: 1, target: el, clientX: 1, clientY: 1 });
+    el.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, cancelable: true, touches: [t], targetTouches: [t], changedTouches: [t] }));
+    el.dispatchEvent(new TouchEvent('touchend', { bubbles: true, cancelable: true, touches: [], targetTouches: [], changedTouches: [t] }));
+    if (lastHover && lastHover !== el && !lastHover.contains(el)) {
+      lastHover.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: el }));
+    }
+    if (lastHover !== el) el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, relatedTarget: lastHover || document.body }));
+    lastHover = el;
+    el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+  }
+
+  function check(name, ok) { log.push({ name: name, ok: !!ok }); }
+
+  function run() {
+    var menu1 = $('ddsubmenu1'), menu2 = $('ddsubmenu2'), nested = $('nestedUl');
+    var payContent = document.querySelector('#payDropdown .dropdown-content');
+    history.replaceState(null, '', location.pathname + location.search);
+
+    tap($('tender'));
+    check('1st tap on "Tender" opens its menu', visible(menu1));
+    check('1st tap on "Tender" does not navigate', location.hash === '');
+
+    tap($('more'));
+    check('tap on nested header "More" opens nested menu', visible(nested));
+    check('...keeps parent menu open', visible(menu1));
+    check('...does not navigate', location.hash === '');
+
+    tap($('cms'));
+    check('tap on another header "CMS" opens it', visible(menu2));
+    check('...and closes "Tender"', !visible(menu1));
+
+    tap($('outside'));
+    check('tap outside closes menus', !visible(menu2) && !visible(menu1));
+
+    tap($('tender'));
+    tap($('tender'));
+    check('2nd tap on open "Tender" follows its link', location.hash === '#tender-page');
+    history.replaceState(null, '', location.pathname + location.search);
+
+    tap($('outside'));
+    tap($('tender'));
+    tap($('mytender'));
+    check('tap on menu item follows its link', location.hash === '#my-tender');
+    check('...and closes the menu', !visible(menu1));
+    history.replaceState(null, '', location.pathname + location.search);
+
+    tap($('payBtn'));
+    check('tap on CSS dropdown button shows content', shown(payContent));
+    tap($('outside'));
+    check('tap outside hides CSS dropdown', !shown(payContent));
+
+    tap($('home'));
+    check('plain link without menu navigates on 1st tap', location.hash === '#home');
+    history.replaceState(null, '', location.pathname + location.search);
+
+    var passed = log.filter(function (r) { return r.ok; }).length;
+    $('results').innerHTML = (withScript ? 'WITH touch_hover.js' : 'WITHOUT touch_hover.js (control)') + '\n' +
+      log.map(function (r) { return '<span class="' + (r.ok ? 'pass">PASS' : 'fail">FAIL') + '</span> ' + r.name; }).join('\n') +
+      '\n\n' + passed + '/' + log.length + ' passed';
+    window.harnessResult = { withScript: withScript, passed: passed, total: log.length, results: log };
+  }
+
+  function start() { setTimeout(run, 300); }
+  if (withScript) {
+    var s = document.createElement('script');
+    s.src = '../app/src/main/assets/touch_hover.js';
+    s.onload = start;
+    document.head.appendChild(s);
+  } else {
+    window.addEventListener('load', start);
+  }
+})();
+</script>
+</body>
+</html>

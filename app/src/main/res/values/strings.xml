@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">e-GP Browser</string>
+
+    <!-- Address bar and toolbar -->
+    <string name="address_hint">Enter e-GP address</string>
+    <string name="address_invalid">This is not a valid web address</string>
+    <string name="address_blocked">This address cannot be opened</string>
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_home">e-GP home</string>
+    <string name="action_reload">Reload</string>
+    <string name="action_stop">Stop loading</string>
+    <string name="action_menu">More options</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_exit_fullscreen">Exit full screen</string>
+    <string name="action_navigate_up">Navigate up</string>
+    <string name="security_secure">Secure connection to %1$s</string>
+    <string name="security_not_verified">Not a verified e-GP page</string>
+    <string name="mode_badge_desktop">Desktop</string>
+    <string name="mode_badge_mobile">Mobile</string>
+    <string name="mode_badge_desktop_description">Desktop site is on. Tap to switch to mobile layout.</string>
+    <string name="mode_badge_mobile_description">Mobile layout is on. Tap to switch to desktop site.</string>
+    <string name="offline_banner">You are offline</string>
+    <string name="fullscreen_hint">Swipe from the edge to show system bars. Press Back to exit full screen.</string>
+
+    <!-- Policies -->
+    <string name="legal_privacy">Privacy policy</string>
+    <string name="legal_terms">Terms of use</string>
+    <string name="legal_refund">Payment &amp; refund policy</string>
+    <string name="legal_missing">This document is not available.</string>
+    <string name="legal_placeholder">[to be provided by the publisher]</string>
+
+    <!-- Menu sheet -->
+    <string name="menu_desktop_summary">Full portal layout, best for tenders and tables</string>
+    <string name="menu_open_external">Open in browser</string>
+    <string name="menu_clear_data">Clear data</string>
+    <string name="menu_sign_out">Sign out</string>
+    <string name="action_account">Account &amp; access</string>
+
+    <!-- First launch -->
+    <string name="disclaimer_title">Independent app</string>
+    <string name="disclaimer_message">e-GP Browser is an independent browser for the public e-GP portal (www.eprocure.gov.bd). It is not made by, affiliated with or endorsed by the Government of Bangladesh, BPPA, CPTU or the e-GP portal.\n\nAll procurement content comes from www.eprocure.gov.bd and is shown unchanged. Sign in only on the official portal pages; this app never stores your e-GP password.</string>
+    <string name="disclaimer_accept">I understand</string>
+
+    <!-- Access lock (direct build) -->
+    <string name="locked_welcome_title">Welcome to e-GP Browser</string>
+    <string name="locked_welcome_message">Sign in with your Google account to start your free 7-day trial. Your trial and any purchase stay with your account, even on a new phone.</string>
+    <string name="locked_action_start">Get started</string>
+    <string name="locked_trial_title">Start your free trial</string>
+    <string name="locked_trial_message">Use every feature free for 7 days. No payment details needed.</string>
+    <string name="locked_action_trial">Start free trial</string>
+    <string name="locked_expired_title">Your free trial has ended</string>
+    <string name="locked_expired_message">Unlock e-GP Browser for life with a one-time payment of ৳250. No subscription, no renewals. The e-GP portal itself stays free in any other browser.</string>
+    <string name="locked_action_buy">Unlock for ৳250</string>
+    <string name="locked_verify_title">Connect to confirm your access</string>
+    <string name="locked_verify_message">Your access has not been confirmed online for a while. Connect to the internet once to continue.</string>
+    <string name="locked_action_verify">Check now</string>
+
+    <!-- Overflow menu -->
+    <string name="action_desktop_mode">Desktop site</string>
+    <string name="action_zoom_in">Zoom in</string>
+    <string name="action_zoom_out">Zoom out</string>
+    <string name="action_fullscreen">Full screen</string>
+    <string name="action_downloads">Downloads</string>
+    <string name="action_open_external">Open in another browser</string>
+    <string name="action_clear_data">Clear browsing data…</string>
+    <string name="action_sign_out">Sign out of this device…</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Rendering mode -->
+    <string name="mode_switch_desktop_title">Switch to desktop site?</string>
+    <string name="mode_switch_mobile_title">Switch to mobile layout?</string>
+    <string name="mode_switch_message">The current page will reload. You stay signed in, but anything typed into a form on this page that has not been saved will be lost.</string>
+    <string name="mode_switch_confirm">Switch and reload</string>
+
+    <!-- Errors -->
+    <string name="error_offline_title">No internet connection</string>
+    <string name="error_offline_message">Check your mobile data or Wi-Fi. The page will retry automatically when you are back online.</string>
+    <string name="error_timeout_title">The e-GP server is taking too long</string>
+    <string name="error_timeout_message">The portal may be busy, especially near tender deadlines. Try again in a moment.</string>
+    <string name="error_host_title">Server not found</string>
+    <string name="error_host_message">The address could not be found. Check your connection and the address.</string>
+    <string name="error_connection_title">Could not connect</string>
+    <string name="error_connection_message">The connection to the e-GP server failed. Try again.</string>
+    <string name="error_ssl_title">Connection is not secure</string>
+    <string name="error_ssl_message">The server\'s security certificate could not be verified, so the page was blocked to protect your account. Check the device date and time, avoid public Wi-Fi that asks you to sign in, and try again later.</string>
+    <string name="error_ssl_resource">Part of this page was blocked because its security certificate is not valid.</string>
+    <string name="error_unsafe_title">Unsafe page blocked</string>
+    <string name="error_unsafe_message">Google Safe Browsing reported this page as unsafe.</string>
+    <string name="error_generic_title">Page could not be loaded</string>
+    <string name="error_generic_message">Something went wrong while loading the page. Try again.</string>
+    <string name="error_server">The e-GP server returned an error (HTTP %1$d)</string>
+
+    <!-- Navigation policy -->
+    <string name="external_title">Open outside e-GP Browser?</string>
+    <string name="external_message">This link leads to %1$s, which is not on the e-GP portal. It will open in another app and your e-GP session will not be shared with it.</string>
+    <string name="external_open">Open</string>
+    <string name="external_target_app">another app</string>
+    <string name="external_no_app">No app can open this link</string>
+    <string name="blocked_credentials">Blocked a link that contains embedded login details</string>
+    <string name="blocked_scheme">Blocked a link type this browser does not open</string>
+    <string name="blocked_invalid">Blocked an invalid link</string>
+    <string name="resubmit_title">Submit the form again?</string>
+    <string name="resubmit_message">This page was the result of a form submission. Sending it again may submit the same information to e-GP twice.</string>
+    <string name="resubmit_confirm">Send again</string>
+    <string name="resubmit_cancel">Don\'t send</string>
+
+    <!-- Pop-ups -->
+    <string name="popup_close">Close window</string>
+    <string name="popup_loading">Loading…</string>
+    <string name="popup_limit">Too many windows are open. Close one first.</string>
+    <string name="popup_load_failed">The window could not be loaded</string>
+    <string name="popup_crashed">A window stopped working and was closed</string>
+    <string name="renderer_crashed">The page stopped working and was reloaded</string>
+
+    <!-- File chooser -->
+    <string name="file_chooser_unavailable">No file picker is available on this device</string>
+    <string name="file_chooser_unsupported">That file could not be attached. Choose it from Files or Downloads instead.</string>
+
+    <!-- Clearing data -->
+    <string name="clear_data_title">Clear browsing data</string>
+    <string-array name="clear_data_options">
+        <item>Cached pages and images</item>
+        <item>Cookies and sign-in session</item>
+        <item>Browsing history</item>
+        <item>Site storage and saved form data</item>
+    </string-array>
+    <string name="clear_data_confirm">Clear</string>
+    <string name="clear_data_done">Browsing data cleared</string>
+    <string name="clear_session_warning_title">You will be signed out</string>
+    <string name="clear_session_warning_message">Clearing cookies or site storage ends your e-GP session on this device. Any unsaved work in open forms will be lost.</string>
+    <string name="sign_out_title">Sign out of this device?</string>
+    <string name="sign_out_message">This clears cookies, site storage and history in this app. Use the portal\'s own Logout button first so the e-GP server also ends your session. Unsaved work will be lost.</string>
+    <string name="sign_out_confirm">Sign out</string>
+
+    <!-- Downloads -->
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_empty">Files you download from e-GP appear here.\nThey are saved in Downloads/e-GP.</string>
+    <string name="download_notification_description">e-GP Browser</string>
+    <string name="download_started">Downloading %1$s</string>
+    <string name="download_view">View</string>
+    <string name="download_open">Open</string>
+    <string name="download_open_with">Open with</string>
+    <string name="download_remove">Remove</string>
+    <string name="download_remove_title">Remove from list?</string>
+    <string name="download_remove_message">The file stays in your Downloads/e-GP folder.</string>
+    <string name="download_untitled">Untitled file</string>
+    <string name="download_missing">The file is no longer available</string>
+    <string name="download_no_viewer">No installed app can open this file type</string>
+    <string name="download_failed">The download could not be started</string>
+    <string name="download_invalid">Invalid download link</string>
+    <string name="download_unsupported">This file is generated inside the page and cannot be downloaded by this browser. See the troubleshooting guide.</string>
+    <string name="download_permission_denied">Storage permission is needed to save files on this Android version</string>
+    <string name="download_retry_from_page">Download the file again from the e-GP page</string>
+    <string name="download_blocked_title">Download blocked</string>
+    <string name="download_blocked_executable">This file is an app or program. e-GP Browser never downloads executable files.</string>
+    <string name="download_status_pending">Waiting to start…</string>
+    <string name="download_status_running">%1$d%% of %2$s</string>
+    <string name="download_status_running_unknown">%1$s downloaded</string>
+    <string name="download_status_paused">Paused, waiting for network</string>
+    <string name="download_status_done">Completed · %1$s</string>
+    <string name="download_failed_http">Failed: server error %1$d. The link may have expired or your session ended. Download it again from the page.</string>
+    <string name="download_failed_space">Failed: not enough storage space</string>
+    <string name="download_failed_storage">Failed: storage is not available</string>
+    <string name="download_failed_redirects">Failed: too many redirects</string>
+    <string name="download_failed_generic">Failed. Tap Retry or download again from the page.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="pref_category_display">Display</string>
+    <string name="pref_desktop_title">Desktop site</string>
+    <string name="pref_desktop_summary">Show e-GP as on a computer (recommended for tender forms and wide tables)</string>
+    <string name="pref_text_zoom_title">Text size</string>
+    <string name="pref_orientation_title">Screen orientation</string>
+    <string name="pref_category_privacy">Privacy and security</string>
+    <string name="pref_third_party_title">Allow third-party cookies</string>
+    <string name="pref_third_party_summary">Only needed if a verified payment or sign-in page embedded in e-GP does not work</string>
+    <string name="pref_extra_hosts_title">Additional trusted sites</string>
+    <string name="pref_extra_hosts_dialog">Only add exact host names (for example pay.example.com.bd) that you have verified are official e-GP payment or sign-in services. Trusted sites open inside this browser. Separate with commas.</string>
+    <string name="pref_extra_hosts_none">None. Only www.eprocure.gov.bd opens inside this browser.</string>
+    <string name="pref_extra_hosts_invalid">Not a valid host name: %1$s</string>
+    <string name="pref_clear_title">Clear browsing data</string>
+    <string name="pref_clear_summary">Cache, cookies, history and site storage</string>
+    <string name="pref_category_about">About</string>
+    <string name="pref_version_title">Version</string>
+    <string name="pref_version_summary">%1$s · Independent app, not affiliated with the Government of Bangladesh</string>
+    <string name="pref_about_summary">Displays the official e-GP portal (www.eprocure.gov.bd) without changing it. Your password is never stored by this app.</string>
+
+    <string-array name="text_zoom_entries">
+        <item>Smallest (75%)</item>
+        <item>Small (90%)</item>
+        <item>Default (100%)</item>
+        <item>Large (115%)</item>
+        <item>Larger (130%)</item>
+        <item>Largest (150%)</item>
+    </string-array>
+    <string-array name="text_zoom_values" translatable="false">
+        <item>75</item>
+        <item>90</item>
+        <item>100</item>
+        <item>115</item>
+        <item>130</item>
+        <item>150</item>
+    </string-array>
+    <string-array name="orientation_entries">
+        <item>Follow device</item>
+        <item>Portrait</item>
+        <item>Landscape</item>
+    </string-array>
+    <string-array name="orientation_values" translatable="false">
+        <item>auto</item>
+        <item>portrait</item>
+        <item>landscape</item>
+    </string-array>
+</resources>

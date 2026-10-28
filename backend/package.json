@@ -1,0 +1,35 @@
+{
+  "name": "egp-browser-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Accounts, 7-day trial, PayStation payments and lifetime entitlement for the e-GP Browser direct build.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "migrate": "node dist/migrate.js",
+    "migrate:dev": "tsx src/migrate.ts",
+    "reconcile": "node dist/reconcile.js",
+    "keygen": "tsx scripts/keygen.ts",
+    "test": "node --import tsx --test --test-concurrency=1 tests/paystation-client.test.ts tests/auth-trial.test.ts tests/payments.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^11.2.1",
+    "fastify": "^5.12.7",
+    "jose": "^6.2.13",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/pg": "^8.23.1",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

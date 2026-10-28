@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/pref_category_display">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="desktop_mode"
+            app:summary="@string/pref_desktop_summary"
+            app:title="@string/pref_desktop_title" />
+
+        <ListPreference
+            app:defaultValue="100"
+            app:entries="@array/text_zoom_entries"
+            app:entryValues="@array/text_zoom_values"
+            app:key="text_zoom"
+            app:title="@string/pref_text_zoom_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="auto"
+            app:entries="@array/orientation_entries"
+            app:entryValues="@array/orientation_values"
+            app:key="orientation"
+            app:title="@string/pref_orientation_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_privacy">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="third_party_cookies"
+            app:summary="@string/pref_third_party_summary"
+            app:title="@string/pref_third_party_title" />
+
+        <EditTextPreference
+            app:defaultValue=""
+            app:dialogMessage="@string/pref_extra_hosts_dialog"
+            app:key="extra_trusted_hosts"
+            app:title="@string/pref_extra_hosts_title" />
+
+        <Preference
+            app:key="clear_data"
+            app:summary="@string/pref_clear_summary"
+            app:title="@string/pref_clear_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_about">
+        <Preference
+            app:key="version"
+            app:selectable="false"
+            app:title="@string/pref_version_title" />
+
+        <Preference
+            app:key="privacy"
+            app:title="@string/legal_privacy" />
+
+        <Preference
+            app:key="terms"
+            app:title="@string/legal_terms" />
+
+        <Preference
+            app:selectable="false"
+            app:summary="@string/pref_about_summary"
+            app:title="@string/app_name" />
+    </PreferenceCategory>
+</PreferenceScreen>

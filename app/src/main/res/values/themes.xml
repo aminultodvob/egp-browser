@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.EgpBrowser" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorOnPrimary">@color/light_on_primary</item>
+        <item name="colorPrimaryContainer">@color/light_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/light_on_primary_container</item>
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorOnSecondary">@color/light_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/light_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/light_on_secondary_container</item>
+        <item name="colorTertiary">@color/light_tertiary</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
+        <item name="colorSurfaceContainerLowest">@color/light_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/light_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/light_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/light_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/light_surface_container_highest</item>
+        <item name="colorOutline">@color/light_outline</item>
+        <item name="colorOutlineVariant">@color/light_outline_variant</item>
+        <item name="android:colorBackground">@color/light_surface</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape.EgpBrowser.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/Shape.EgpBrowser.Medium</item>
+        <item name="materialButtonStyle">@style/Widget.EgpBrowser.Button</item>
+    </style>
+
+    <style name="Theme.EgpBrowser.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/light_surface</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.EgpBrowser</item>
+    </style>
+
+    <style name="Shape.EgpBrowser.Small" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="Shape.EgpBrowser.Medium" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="Widget.EgpBrowser.Button" parent="Widget.Material3.Button">
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <!-- Bottom toolbar buttons: equal width, 48dp minimum touch target. -->
+    <style name="Widget.EgpBrowser.ToolbarButton" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:scaleType">center</item>
+        <item name="tint">?attr/colorOnSurfaceVariant</item>
+    </style>
+</resources>

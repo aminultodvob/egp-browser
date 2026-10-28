@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sampled from the e-GP Browser logo. -->
+    <color name="brand_blue_bright">#0074E7</color>
+    <color name="brand_navy">#022785</color>
+    <color name="brand_green">#7BE84F</color>
+    <color name="brand_green_text">#2E7D1F</color>
+
+    <!-- Light scheme -->
+    <color name="light_primary">#0038B0</color>
+    <color name="light_on_primary">#FFFFFF</color>
+    <color name="light_primary_container">#DCE4FF</color>
+    <color name="light_on_primary_container">#001550</color>
+    <color name="light_secondary">#2E7D1F</color>
+    <color name="light_on_secondary">#FFFFFF</color>
+    <color name="light_secondary_container">#C9F7B0</color>
+    <color name="light_on_secondary_container">#0B2900</color>
+    <color name="light_tertiary">#0067CC</color>
+    <color name="light_surface">#F8F9FF</color>
+    <color name="light_on_surface">#171B26</color>
+    <color name="light_on_surface_variant">#454A5C</color>
+    <color name="light_surface_container_lowest">#FFFFFF</color>
+    <color name="light_surface_container_low">#F2F4FC</color>
+    <color name="light_surface_container">#ECEFF9</color>
+    <color name="light_surface_container_high">#E6EAF6</color>
+    <color name="light_surface_container_highest">#E0E5F3</color>
+    <color name="light_outline">#757A8E</color>
+    <color name="light_outline_variant">#C5CADC</color>
+
+    <!-- Dark scheme -->
+    <color name="dark_primary">#B5C6FF</color>
+    <color name="dark_on_primary">#002A80</color>
+    <color name="dark_primary_container">#0038B0</color>
+    <color name="dark_on_primary_container">#DCE4FF</color>
+    <color name="dark_secondary">#7BE84F</color>
+    <color name="dark_on_secondary">#0F3900</color>
+    <color name="dark_secondary_container">#1E5410</color>
+    <color name="dark_on_secondary_container">#C9F7B0</color>
+    <color name="dark_tertiary">#9DCAFF</color>
+    <color name="dark_surface">#0E1220</color>
+    <color name="dark_on_surface">#E1E4F2</color>
+    <color name="dark_on_surface_variant">#C3C7D9</color>
+    <color name="dark_surface_container_lowest">#090C17</color>
+    <color name="dark_surface_container_low">#141927</color>
+    <color name="dark_surface_container">#181D2C</color>
+    <color name="dark_surface_container_high">#222837</color>
+    <color name="dark_surface_container_highest">#2D3343</color>
+    <color name="dark_outline">#8D92A5</color>
+    <color name="dark_outline_variant">#454A5C</color>
+
+</resources>

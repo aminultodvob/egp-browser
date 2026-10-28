@@ -1,0 +1,101 @@
+# e-GP Browser production stack on one small Linux server.
+#   caddy      HTTPS (automatic Let's Encrypt certificates), reverse proxy, static policy pages
+#   api        the backend (runs migrations on start)
+#   db         PostgreSQL 17, data in a named volume, never exposed to the internet
+#   reconcile  re-checks open/paid orders with PayStation every 15 minutes
+#   backup     nightly pg_dump, keeps 14 days locally (copy them off the server too; see DEPLOYMENT.md)
+#
+# Usage (on the server, in this folder):  docker compose up -d --build
+name: egp-browser
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in .env}
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site:/srv/site:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+  api:
+    build: ../backend
+    restart: unless-stopped
+    env_file: ./backend.env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "8080"
+      TRUST_PROXY: "true"
+      PUBLIC_BASE_URL: https://${API_DOMAIN}
+      DATABASE_URL: postgres://egp:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/egp_browser
+    expose:
+      - "8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  reconcile:
+    build: ../backend
+    restart: unless-stopped
+    env_file: ./backend.env
+    environment:
+      NODE_ENV: production
+      PUBLIC_BASE_URL: https://${API_DOMAIN}
+      DATABASE_URL: postgres://egp:${POSTGRES_PASSWORD}@db:5432/egp_browser
+    command: ["sh", "-c", "while true; do node dist/reconcile.js; sleep 900; done"]
+    depends_on:
+      api:
+        condition: service_started
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: egp
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: egp_browser
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U egp -d egp_browser"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGUSER: egp
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: egp_browser
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          pg_dump --format=custom --file=/backups/egp_browser-$$(date +%Y%m%d-%H%M).dump && echo "backup ok"
+          find /backups -name 'egp_browser-*.dump' -mtime +14 -delete
+          sleep 86400
+        done
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pg_data:
+  caddy_data:
+  caddy_config:

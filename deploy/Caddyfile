@@ -1,0 +1,30 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# API: https://api.example.com  (PayStation IPN + callback, Android app)
+{$API_DOMAIN} {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		-Server
+	}
+	reverse_proxy api:8080
+}
+
+# Public website: policies (needed for Google Play and the OAuth consent screen) and the APK download.
+{$SITE_DOMAIN} {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+	root * /srv/site
+	file_server
+}
