@@ -30,8 +30,8 @@ android {
         applicationId = "bd.egpmobile.browser"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.2.0"
+        versionCode = 6
+        versionName = "1.2.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Publisher details shown in the in-app policies. Supply real, verified values for release.
