@@ -32,8 +32,9 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_IDS
         sync: false
+      # https://sandbox.paystation.com.bd for test payments, https://api.paystation.com.bd for live.
       - key: PAYSTATION_BASE_URL
-        value: https://api.paystation.com.bd
+        sync: false
       - key: PAYSTATION_MERCHANT_ID
         sync: false
       - key: PAYSTATION_PASSWORD
