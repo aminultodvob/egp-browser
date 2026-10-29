@@ -34,8 +34,9 @@ export async function migrate(pool: pg.Pool): Promise<string[]> {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error('DATABASE_URL is required');
+  // Migrations hold a session-level advisory lock, so they need a direct (non-pooled) connection.
+  const url = process.env.DATABASE_DIRECT_URL || process.env.DATABASE_URL;
+  if (!url) throw new Error('DATABASE_DIRECT_URL or DATABASE_URL is required');
   const pool = createPool(url);
   migrate(pool)
     .then((applied) => console.log(applied.length ? `Applied: ${applied.join(', ')}` : 'Database is up to date'))

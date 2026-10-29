@@ -4,8 +4,9 @@ import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
+import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../src/app.js';
+import { createApp } from '../src/app.js';
 import { loadConfig } from '../src/config.js';
 import { createPool, type Pool } from '../src/db.js';
 import { migrate } from '../src/migrate.js';
@@ -47,7 +48,10 @@ export class FakePayStation implements PayStationApi {
 }
 
 export interface Harness {
+  /** Underlying Fastify instance of the NestJS app (for inject()). */
   app: FastifyInstance;
+  nest: NestFastifyApplication;
+  cronSecret: string;
   pool: Pool;
   paystation: FakePayStation;
   entitlementPublicKey: KeyObject;
@@ -87,14 +91,14 @@ export async function startHarness(): Promise<Harness> {
     PAYSTATION_BASE_URL: 'https://sandbox.paystation.com.bd',
     PAYSTATION_MERCHANT_ID: 'test-merchant',
     PAYSTATION_PASSWORD: 'test-password',
+    CRON_SECRET: 'test-cron-secret-that-is-long-enough-0123456789',
   });
   const pool = createPool(databaseUrl);
   await migrate(pool);
   const paystation = new FakePayStation();
-  const app = await buildApp({
+  const nest = await createApp({
     config,
     pool,
-    logger: false,
     paystation,
     // Test identities look like "test-google-token:<sub>:<email>".
     verifyGoogle: async (idToken) => {
@@ -102,7 +106,8 @@ export async function startHarness(): Promise<Harness> {
       if (prefix !== 'test-google-token' || !sub || !email) throw new ApiError(401, 'INVALID_GOOGLE_TOKEN', 'bad token');
       return { sub, email, name: `User ${sub}` };
     },
-  });
+  }, { logger: false });
+  const app = nest.getHttpAdapter().getInstance() as unknown as FastifyInstance;
 
   const request: Harness['request'] = async (method, url, token, body, ip = '127.0.0.1') => {
     const response = await app.inject({
@@ -118,6 +123,8 @@ export async function startHarness(): Promise<Harness> {
   let signIns = 0;
   return {
     app,
+    nest,
+    cronSecret: config.CRON_SECRET,
     pool,
     paystation,
     entitlementPublicKey: publicKey,
@@ -131,7 +138,7 @@ export async function startHarness(): Promise<Harness> {
       return { accessToken: res.json.accessToken, refreshToken: res.json.refreshToken, userId: res.json.user.id };
     },
     async close() {
-      await app.close();
+      await nest.close();
       await pool.end();
       await pg.stop();
       await rm(dir, { recursive: true, force: true }).catch(() => undefined);

@@ -11,7 +11,7 @@ import java.io.File
  */
 class LoggingPolicyTest {
 
-    private val sources: List<File> = listOf("src/main/java", "src/play/java", "src/direct/java")
+    private val sources: List<File> = listOf("src/main/java")
         .flatMap { File(it).walkTopDown().filter { f -> f.isFile && f.extension == "kt" }.toList() }
 
     @Test

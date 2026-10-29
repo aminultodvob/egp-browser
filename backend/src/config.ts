@@ -11,7 +11,13 @@ const schema = z.object({
   PORT: z.coerce.number().int().positive().default(8080),
   /** Set to true only when running behind a reverse proxy that sets X-Forwarded-For. */
   TRUST_PROXY: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+  /** Runtime connection. On Neon use the pooled ("-pooler") connection string. */
   DATABASE_URL: z.string().min(1),
+  /**
+   * Direct (non-pooled) connection used only for migrations, which hold a session-level lock that a
+   * transaction pooler cannot keep. On Neon: the same string without "-pooler" in the host name.
+   */
+  DATABASE_DIRECT_URL: z.string().min(1).optional(),
   /** Public HTTPS origin of this API, e.g. https://api.example.com. Used for PayStation callback_url. */
   PUBLIC_BASE_URL: z.string().url(),
   /** HMAC key for access tokens; at least 32 random bytes. */
@@ -33,6 +39,8 @@ const schema = z.object({
   /** Deep link the payment result page offers to reopen the app. */
   APP_RETURN_URL: z.string().default('egpbrowser://payment-result'),
   MAX_TRIALS_PER_DEVICE: z.coerce.number().int().min(1).default(1),
+  /** Shared secret cron-job.org sends as "Authorization: Bearer <secret>" to run reconciliation. */
+  CRON_SECRET: z.string().min(32),
 });
 
 export type Config = z.infer<typeof schema>;

@@ -12,6 +12,7 @@ const publicDer = publicKey.export({ type: 'spki', format: 'der' }).toString('ba
 console.log('# --- backend .env (secret) ---');
 console.log(`JWT_SECRET=${randomBytes(48).toString('base64url')}`);
 console.log(`TRIAL_HASH_SECRET=${randomBytes(48).toString('base64url')}`);
+console.log(`CRON_SECRET=${randomBytes(32).toString('base64url')}`);
 console.log(`ENTITLEMENT_PRIVATE_KEY="${privatePem.trim().replace(/\n/g, '\\n')}"`);
 console.log('');
 console.log('# --- Android build (public, not secret) ---');

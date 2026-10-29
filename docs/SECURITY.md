@@ -47,7 +47,7 @@ Hosts were identified by fetching the public homepage and following its redirect
 * **Third-party cookies** are off by default and can be turned on in Settings. Turn them on only if a verified embedded payment or sign-in page requires them.
 * **System Autofill** can offer to save the e-GP password if the user has a password manager enabled. This is a device-level choice outside this app's control.
 
-## Direct (website) build: accounts and payments
+## Accounts, payments and backend
 
 | # | Control | Enforced in | How |
 |---|---------|-------------|-----|
@@ -64,3 +64,7 @@ Hosts were identified by fetching the public homepage and following its redirect
 | 30 | **Abuse limits** | `@fastify/rate-limit`, `trial_claims` | Per-IP and per-user rate limits. One trial per Google identity (survives account deletion) and per device (keyed hash of the app-scoped Android ID). |
 | 31 | **Minimal data** | schema, privacy policy | No passwords, PINs, OTPs or card data are stored. The payer's phone number is passed to PayStation but not stored. Account deletion removes personal data and unlinks payment records. |
 | 32 | **Return page hardening** | `/payment/return` | No scripts, `Content-Security-Policy: default-src 'none'`, `no-store`, `no-referrer`. It shows only the verified status. |
+| 33 | **Scheduler endpoint secret** | `CronGuard` | `POST /api/cron/reconcile` requires `Authorization: Bearer <CRON_SECRET>` (at least 32 characters), compared in constant time. It can only re-check existing orders with PayStation. |
+| 34 | **Verified database TLS** | `DATABASE_URL` with `sslmode=verify-full` | Connections to Neon use TLS 1.3 and verify Neon's certificate. The direct (non-pooled) URL is used only for migrations. |
+| 35 | **Patched HTTP stack** | `backend/package.json` `overrides` | NestJS 11's Fastify adapter is forced onto Fastify 5.12.x, which fixes the advisories in 5.11.x. `npm audit` reports 0. |
+| 36 | **Complimentary access is separate from payments** | migration 002, `admin.ts` | Admin-granted access has a reason and no order. A database constraint forbids access with neither. Revoking complimentary access never touches paid access. |

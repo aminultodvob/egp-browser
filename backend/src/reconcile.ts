@@ -1,13 +1,12 @@
 /**
- * Reconciliation job (run from cron, e.g. every 15 minutes):
- *  - re-checks open orders with PayStation (catches missed IPNs and expiries);
- *  - re-checks paid orders from the last 30 days (catches refunds, which revoke access);
- *  - lists orders that need a person (VERIFICATION_REQUIRED), e.g. duplicate payments to refund.
+ * Command-line reconciliation (same logic as POST /api/cron/reconcile, without the time budget).
+ * Usually triggered by cron-job.org through the API; this script is for manual runs.
  */
 import { loadConfig } from './config.js';
 import { createPool } from './db.js';
-import { PayStationClient, ProviderUnavailableError } from './payments/paystation.js';
+import { PayStationClient } from './payments/paystation.js';
 import { PaymentService } from './payments/service.js';
+import { reconcile } from './payments/reconcile.service.js';
 
 const config = loadConfig();
 const pool = createPool(config.DATABASE_URL);
@@ -23,32 +22,7 @@ const service = new PaymentService(
 );
 
 try {
-  const { rows } = await pool.query<{ invoice_number: string; status: string }>(
-    `SELECT invoice_number, status FROM payment_orders
-      WHERE (status IN ('PENDING', 'PROCESSING') AND created_at < now() - interval '2 minutes')
-         OR (status = 'PAID' AND paid_at > now() - interval '30 days')
-      ORDER BY created_at`,
-  );
-  const changes: string[] = [];
-  let unavailable = 0;
-  for (const row of rows) {
-    try {
-      const after = await service.verify(row.invoice_number);
-      if (after.status !== row.status) changes.push(`${row.invoice_number}: ${row.status} -> ${after.status}`);
-    } catch (error) {
-      if (error instanceof ProviderUnavailableError) unavailable++;
-      else throw error;
-    }
-  }
-  const review = await pool.query<{ invoice_number: string; failure_reason: string | null; created_at: Date }>(
-    `SELECT invoice_number, failure_reason, created_at FROM payment_orders WHERE status = 'VERIFICATION_REQUIRED' ORDER BY created_at`,
-  );
-  console.log(JSON.stringify({
-    checked: rows.length,
-    providerUnavailable: unavailable,
-    changes,
-    needsReview: review.rows.map((r) => ({ invoice: r.invoice_number, reason: r.failure_reason, createdAt: r.created_at })),
-  }, null, 2));
+  console.log(JSON.stringify(await reconcile(pool, service, { maxOrders: Number.MAX_SAFE_INTEGER, budgetMs: Number.MAX_SAFE_INTEGER }), null, 2));
 } finally {
   await pool.end();
 }

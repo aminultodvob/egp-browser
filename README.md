@@ -4,88 +4,69 @@ A secure, premium Android browser for Bangladesh's public e-GP procurement porta
 
 > **Independent app.** Not made by, affiliated with or endorsed by the Government of Bangladesh, BPPA, CPTU or the e-GP portal. It does not modify or automate the portal and never bypasses CAPTCHA, OTP, signatures or payment checks.
 
-## Two builds
+## User flow
 
-| | **play** | **direct** |
-|---|---|---|
-| Channel | Google Play | Your website (APK download) |
-| Price | Free | 7-day free trial, then **৳250 one-time lifetime** via PayStation |
-| Account | None | Google sign-in |
-| Server | None | [`backend/`](backend) (Node.js + PostgreSQL) |
-| Bundle | `./gradlew bundlePlayRelease` | `./gradlew assembleDirectRelease` |
+Install from **Google Play** → open → **sign in with Google** (the browser stays locked until then) → **7-day free trial** (timed by the server) → **৳250 one-time lifetime access via PayStation** (bKash, Nagad, Rocket, cards). The purchase is restored on any phone where the user signs in with the same Google account.
 
-Payment code lives only in `app/src/direct` and is not compiled into the Play build. See [docs/PLAY_STORE.md](docs/PLAY_STORE.md).
+> ⚠ Charging through PayStation inside a Play-distributed app conflicts with Google Play's Payments policy for Bangladesh. The publisher accepted this risk. See [docs/PLAY_STORE.md](docs/PLAY_STORE.md).
 
 | | |
 |---|---|
-| Package | `bd.egpmobile.browser` |
-| Min / target SDK | 26 (Android 8.0) / 36 (Android 16) |
-| App | Kotlin 2.2, Android Views + Material 3 (brand light and dark themes), WebView |
+| App | Kotlin 2.2, Android Views + Material 3 (brand light and dark themes), WebView. Package `bd.egpmobile.browser`, min SDK 26, target SDK 36 |
+| Backend | **NestJS 11** (Fastify adapter), TypeScript, Node.js 20+ |
+| Database | **PostgreSQL on Neon** (Singapore), TLS with certificate verification |
+| Scheduler | **cron-job.org** → `POST /api/cron/reconcile` every 10 minutes |
+| Hosting | Render (free API and static site) via `render.yaml`; self-hosted alternative in `deploy/` |
 | Build | AGP 8.13.2, Gradle 8.14.6, JDK 17 |
-| Backend | Node.js 20+, TypeScript, Fastify 5, PostgreSQL 13+ |
 
 ## Features
 
-* Brand design from the supplied logo: splash screen, adaptive and themed icon, logo top bar with a secure address pill, floating bottom bar with a gradient Home button, bottom-sheet menu, smooth fades and slide-ins, light and dark themes
-* **Desktop / Mobile** rendering modes (desktop user agent derived from the installed WebView version, plus a wide viewport)
-* **Tap-to-hover**: the portal's mouse-hover menus open with a first tap; a second tap follows the link
-* Uploads through the system picker (single and multiple); downloads through DownloadManager with session cookies, notifications and a downloads screen
-* Pop-up windows, zoom, full screen, offline banner with auto-retry, error screens, form-resubmission guard
-* Strict security policy: exact host allowlist, HTTPS only, certificate errors never bypassed, no JS bridges, least-privilege WebView, no sensitive logging ([docs/SECURITY.md](docs/SECURITY.md))
-* Direct build: Google sign-in, server-timed 7-day trial, PayStation checkout in a Custom Tab, server-verified lifetime unlock, a signed offline entitlement, purchase restore on any phone, account deletion, and in-app privacy, terms and refund policies
+* Brand design from the supplied logo: splash, adaptive and themed icon, logo top bar with a secure address pill, floating bottom bar, bottom-sheet menu, smooth animations, light and dark themes
+* **Desktop / Mobile** rendering modes; **tap-to-hover** for the portal's hover menus
+* Uploads (system picker, single and multiple); downloads with session cookies, notifications and a downloads screen
+* Pop-ups, zoom, full screen, offline banner with auto-retry, error screens, form-resubmission guard
+* Strict security: exact host allowlist, HTTPS only, certificate errors never bypassed, no JS bridges, least-privilege WebView, no sensitive logging ([docs/SECURITY.md](docs/SECURITY.md))
+* Accounts: Google sign-in (Credential Manager), rotating refresh tokens in Android Keystore-encrypted storage, server-signed entitlement verified in the app, account deletion in the app and on the web
+* Payments: server-created ৳250 invoice, PayStation checkout in a Custom Tab, PAID only after server-to-server verification, idempotent fulfilment, refunds revoke access, scheduled reconciliation
 
 ## Project layout
 
 ```
-app/src/main/        shared browser (MainActivity, BrowserController, WebView clients, downloads, uploads, policies…)
-app/src/play/        free access gate (Google Play)
-app/src/direct/      account, trial, PayStation purchase (AccessActivity, AccessRepository, EntitlementVerifier…)
-app/src/test*/       JVM unit tests      app/src/androidTest*/  instrumented tests
-backend/             API, migrations, tests, Dockerfile
-branding/  store/    your logo and banner, Play icon 512 and feature graphic
-docs/                SECURITY, BACKEND (API and deployment), PLAY_STORE, RELEASE_CHECKLIST, TESTING, LIMITATIONS
-tools/               touch-hover behavioural harness
+app/                Android app (src/main, src/test, src/androidTest)
+backend/            NestJS API: src/http (controllers, guards), src/payments, src/auth, migrations, tests
+site/               generated public website (policies, account deletion), served by Render
+render.yaml         Render Blueprint (API + static site)
+deploy/             self-hosted alternative (Docker Compose + Caddy)
+branding/ store/    logo, Play icon and feature graphic
+docs/               DEPLOYMENT, PLAY_STORE, BACKEND, SECURITY, TESTING, RELEASE_CHECKLIST, LIMITATIONS
+tools/              touch-hover behavioural harness
 ```
 
-## Build
+## Build the app
 
-Requirements: JDK 17 and the Android SDK (Platform 36, Build-Tools 36). Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.
+Requirements: JDK 17 and the Android SDK (Platform 36). Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.
 
 ```bash
-./gradlew assemblePlayDebug assembleDirectDebug        # debug APKs
-./gradlew testPlayDebugUnitTest testDirectDebugUnitTest lintPlayDebug lintDirectDebug
-./gradlew connectedPlayDebugAndroidTest                # device or emulator; includes live portal checks
-./gradlew bundlePlayRelease                            # Play upload bundle (.aab)
-./gradlew assembleDirectRelease -PEGP_API_BASE_URL=https://api.example.com/ ...   # see RELEASE_CHECKLIST.md
+./gradlew assembleDebug                      # debug APK (talks to http://10.0.2.2:8080 by default)
+./gradlew testDebugUnitTest lintDebug
+./gradlew connectedDebugAndroidTest          # device or emulator
+./gradlew bundleRelease -PEGP_API_BASE_URL=https://<api-host>/ -PEGP_GOOGLE_WEB_CLIENT_ID=... -PEGP_ENTITLEMENT_PUBLIC_KEY=...
 ```
 
-Outputs are under `app/build/outputs/` (`apk/<flavor>/<type>/`, `bundle/playRelease/`).
-
-### Signing
-
-Release builds are unsigned unless signing is configured, either in `keystore.properties` (git-ignored; see `keystore.properties.example`) or with `EGP_KEYSTORE_FILE`, `EGP_KEYSTORE_PASSWORD`, `EGP_KEY_ALIAS` and `EGP_KEY_PASSWORD`. Use a Play **upload key** for the Play build (enroll in Play App Signing) and your own key for the website APK. Back up keystores. Never commit them.
-
-### Direct-build configuration (public values, not secrets)
-
-`EGP_API_BASE_URL` (HTTPS), `EGP_GOOGLE_WEB_CLIENT_ID`, `EGP_ENTITLEMENT_PUBLIC_KEY`, `EGP_SUPPORT_EMAIL`, `EGP_DEVELOPER_NAME`, `EGP_PUBLISHER_WEBSITE`, `EGP_POLICY_EFFECTIVE_DATE`. Pass them as `-P` properties or environment variables. Until they are set, the direct build shows "Service not configured" and policy placeholders. Debug builds default to `http://10.0.2.2:8080/` (a backend on the emulator host).
+Public build settings (not secrets): `EGP_API_BASE_URL`, `EGP_GOOGLE_WEB_CLIENT_ID`, `EGP_ENTITLEMENT_PUBLIC_KEY`, `EGP_SUPPORT_EMAIL`, `EGP_DEVELOPER_NAME`, `EGP_PUBLISHER_WEBSITE`, `EGP_POLICY_EFFECTIVE_DATE`. Release signing: `keystore.properties` (git-ignored) or `EGP_KEYSTORE_*` variables.
 
 ## Backend
 
 ```bash
-cd backend && npm ci && npm test      # 38 tests on an embedded PostgreSQL
+cd backend
+npm ci
+npm test                                     # 46 tests on an embedded PostgreSQL
+cp .env.example .env                         # fill in (npm run keygen for secrets); never commit .env
+npm run build && node --env-file=.env dist/migrate.js && node --env-file=.env dist/server.js
 ```
 
-Setup, API reference and PayStation integration: [docs/BACKEND.md](docs/BACKEND.md). Step-by-step production deployment (DigitalOcean Bangalore + Docker Compose + Caddy HTTPS, Google sign-in setup, PayStation go-live): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md), with files in [`deploy/`](deploy).
-
-## Permissions
-
-| Permission | Why |
-|---|---|
-| `INTERNET`, `ACCESS_NETWORK_STATE` | Load the portal; offline banner and auto-retry |
-| `WRITE_EXTERNAL_STORAGE` (Android 8–9 only) | Save downloads to `Downloads/e-GP`; requested when a download starts |
-
-No camera, microphone, location, contacts or broad storage access.
+API, data model and PayStation integration: [docs/BACKEND.md](docs/BACKEND.md). Step-by-step free deployment (Neon, Render, cron-job.org, Google sign-in, PayStation): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Before releasing
 
-Work through [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md). It lists credentials to create, decisions to confirm (refund window, data retention, use of the "e-GP" name) and what has and hasn't been verified.
+Work through [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) and [docs/PLAY_STORE.md](docs/PLAY_STORE.md).

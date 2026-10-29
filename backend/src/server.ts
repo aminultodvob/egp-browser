@@ -1,4 +1,4 @@
-import { buildApp } from './app.js';
+import { createApp } from './app.js';
 import { loadConfig } from './config.js';
 import { createPool } from './db.js';
 import { googleVerifier } from './auth/google.js';
@@ -6,7 +6,7 @@ import { PayStationClient } from './payments/paystation.js';
 
 const config = loadConfig();
 const pool = createPool(config.DATABASE_URL);
-const app = await buildApp({
+const app = await createApp({
   config,
   pool,
   verifyGoogle: googleVerifier(config.GOOGLE_CLIENT_IDS),
@@ -17,6 +17,7 @@ const app = await buildApp({
     payWithCharge: config.PAYSTATION_PAY_WITH_CHARGE,
   }),
 });
+app.enableShutdownHooks();
 
 const shutdown = async () => {
   await app.close();

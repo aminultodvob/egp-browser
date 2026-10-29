@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-/** Direct (website) build: 7-day trial, then ৳250 lifetime unlock. */
-object FlavorAccess {
+/** Sign-in required; 7-day free trial, then ৳250 lifetime unlock. */
+object AppAccess {
     fun create(context: Context): AccessGate = DirectAccessGate(AccessRepository.get(context))
 }
 

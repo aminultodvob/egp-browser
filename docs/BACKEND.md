@@ -1,8 +1,10 @@
 # Backend: accounts, trial, PayStation payments
 
-Used **only by the direct (website) build**. The Google Play build is free and never contacts this server.
+Stack: **NestJS 11** on the Fastify adapter (Fastify pinned to the patched 5.12.x line), TypeScript, Node.js 20+, **PostgreSQL on Neon**, `jose` (JWT/JWS), `zod` (request validation). `npm audit`: 0 vulnerabilities (October 2026).
 
-Stack: Node.js 20+ / TypeScript, Fastify 5, PostgreSQL 13+, `jose` (JWT/JWS), `zod` (validation). Production dependencies: `npm audit` reports 0 vulnerabilities (October 2026).
+Code layout: `src/http/` holds the NestJS controllers, guards (auth, cron secret, per-user rate limits) and the error filter. `src/payments/`, `src/auth/` and `src/entitlement.ts` hold the framework-independent domain logic. `src/app.module.ts` wires everything with explicit injection tokens.
+
+**Neon.** Runtime traffic uses the pooled connection (`DATABASE_URL`). Migrations use the direct connection (`DATABASE_DIRECT_URL`) because they hold a session-level advisory lock. Use `sslmode=verify-full` so the server certificate is always verified (checked: TLS 1.3, Let's Encrypt certificate for `*.ap-southeast-1.aws.neon.tech`).
 
 ## How it fits together
 
@@ -64,6 +66,7 @@ All JSON. Errors are `{"error": {"code", "message"}}`, and messages are safe to 
 | `POST /api/payment/ipn` | – (PayStation) | PayStation IPN JSON | `{status:"success"}` | 404 unknown invoice, 503 retry |
 | `GET /payment/return/{invoice}` | – | – | HTML result page (no scripts, strict CSP) | – |
 | `GET /health` | – | – | `{ok:true}` | 500 if the DB is down |
+| `POST /api/cron/reconcile` | `Authorization: Bearer <CRON_SECRET>` (cron-job.org) | – | `{checked, remaining, providerUnavailable, changes[], needsReview[]}` (max 25 orders / 20 s per call) | 401 wrong or missing secret |
 
 **Entitlement:**
 
@@ -98,7 +101,7 @@ cp .env.example .env      # fill in the values; PayStation SANDBOX credentials
 docker run -d --name egp-pg -e POSTGRES_USER=egp -e POSTGRES_PASSWORD=egp -e POSTGRES_DB=egp_browser -p 5432:5432 postgres:17
 npm run migrate:dev
 npm run dev               # http://localhost:8080 (the debug app reaches it at http://10.0.2.2:8080 from the emulator)
-npm test                  # 38 tests; starts its own embedded PostgreSQL, no Docker needed
+npm test                  # 46 tests; starts its own embedded PostgreSQL, no Docker needed
 ```
 
 `npm run dev` and `migrate:dev` read the environment, so load `.env` with your shell or a tool such as `dotenv-cli`. Do not commit `.env`.
@@ -108,7 +111,7 @@ npm test                  # 38 tests; starts its own embedded PostgreSQL, no Doc
 1. **Host.** Any container host runs the `Dockerfile` (it applies migrations, then starts). Use a managed PostgreSQL 13+ with automatic daily backups. Put the API behind HTTPS (the platform's TLS or a reverse proxy) and set `TRUST_PROXY=true` only behind that proxy. A single small instance is enough at launch. Compare current hosting prices yourself; they change often, and PayStation's transaction fees are separate (see your merchant agreement).
 2. **Secrets.** Store `JWT_SECRET`, `TRIAL_HASH_SECRET`, `ENTITLEMENT_PRIVATE_KEY` and `PAYSTATION_*` in the host's secret manager. Use different values for staging and production. Rotating `ENTITLEMENT_PRIVATE_KEY` requires an app update with the new public key.
 3. **PayStation.** Staging: `PAYSTATION_BASE_URL=https://sandbox.paystation.com.bd` with sandbox credentials. Production: `https://api.paystation.com.bd` with your approved merchant ID and password. **Send PayStation your IPN URL** `https://<your-api>/api/payment/ipn`. The `callback_url` (`https://<your-api>/payment/return/<invoice>`) is sent with each payment.
-4. **Reconciliation.** Run `npm run reconcile` (`node dist/reconcile.js`) every 15 minutes, using the host's cron or scheduled job. It catches missed IPNs, expires abandoned orders, detects refunds and lists orders that need review.
+4. **Reconciliation.** cron-job.org calls `POST /api/cron/reconcile` every 10 minutes (DEPLOYMENT.md, step 7); `node dist/reconcile.js` runs the same check manually. It catches missed IPNs, expires abandoned orders, detects refunds and lists orders that need review.
 5. **Monitoring.** Alert on `/health` failures, HTTP 5xx rates, and any `VERIFICATION_REQUIRED` orders from the reconcile output.
 6. **Go-live test.** Make one real ৳250 payment with your own account, following PayStation's go-live procedure. Confirm `PAID` and `LIFETIME`, then refund it through PayStation and confirm reconciliation marks it `REFUNDED` and revokes access.
 

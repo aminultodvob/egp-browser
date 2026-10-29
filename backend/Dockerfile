@@ -16,6 +16,7 @@ COPY --from=build /app/dist ./dist
 COPY migrations ./migrations
 USER node
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s CMD wget -qO- http://127.0.0.1:8080/health || exit 1
-# Apply migrations, then start the API.
+# The platform may assign PORT (Render does); default 8080.
+HEALTHCHECK --interval=30s --timeout=5s CMD wget -qO- "http://127.0.0.1:${PORT:-8080}/health" || exit 1
+# Apply migrations (over DATABASE_DIRECT_URL when set), then start the API.
 CMD ["sh", "-c", "node dist/migrate.js && node dist/server.js"]

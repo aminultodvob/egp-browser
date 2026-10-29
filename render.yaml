@@ -1,0 +1,60 @@
+# Render Blueprint: free NestJS API next to the Neon database (both in Singapore / ap-southeast-1).
+# In Render: New -> Blueprint -> select this repository. Values marked sync:false are entered in the
+# dashboard and are never stored in git.
+services:
+  - type: web
+    name: egp-browser-api
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "true"
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_DIRECT_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: TRIAL_HASH_SECRET
+        sync: false
+      - key: ENTITLEMENT_PRIVATE_KEY
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_IDS
+        sync: false
+      - key: PAYSTATION_BASE_URL
+        value: https://api.paystation.com.bd
+      - key: PAYSTATION_MERCHANT_ID
+        sync: false
+      - key: PAYSTATION_PASSWORD
+        sync: false
+      - key: PAYSTATION_PAY_WITH_CHARGE
+        value: "0"
+
+  # Public website: policies (required by Google Play and Google sign-in) and account deletion page.
+  # Generate it with backend/scripts/render-site.ts (real publisher details), commit site/, then deploy.
+  - type: web
+    name: egp-browser-site
+    runtime: static
+    buildCommand: echo "site/ is pre-built by backend/scripts/render-site.ts"
+    staticPublishPath: ./site
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer

@@ -1,5 +1,5 @@
 /**
- * Builds deploy/site/: the public website served by Caddy. It contains the policy pages (rendered
+ * Builds site/ (repository root): the public website, served by Render as a static site or by Caddy. It contains the policy pages (rendered
  * from the same HTML the app ships, so the texts never drift apart) and a simple landing page with
  * the APK download link.
  *
@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const out = join(root, 'deploy', 'site');
+const out = join(root, 'site');
 const required = ['EGP_DEVELOPER_NAME', 'EGP_SUPPORT_EMAIL', 'EGP_PUBLISHER_WEBSITE', 'EGP_POLICY_EFFECTIVE_DATE'] as const;
 const missing = required.filter((k) => !process.env[k]);
 if (missing.length) throw new Error(`Set ${missing.join(', ')} (real, verified values)`);
@@ -32,7 +32,7 @@ header a{color:#fff;text-decoration:none;font-weight:600;font-size:18px}h2{color
 nav{margin-top:32px;font-size:14px}nav a{margin-right:16px}
 @media (prefers-color-scheme:dark){body{background:#0e1220;color:#e1e4f2}h2{color:#b5c6ff}a{color:#9dcaff}}
 </style>`;
-const NAV = `<nav><a href="/">Home</a><a href="/legal/privacy.html">Privacy (website edition)</a><a href="/legal/privacy-play.html">Privacy (Google Play edition)</a><a href="/legal/terms.html">Terms</a><a href="/legal/refund.html">Payment &amp; refunds</a></nav>`;
+const NAV = `<nav><a href="/">Home</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a><a href="/legal/refund.html">Payment &amp; refunds</a><a href="/legal/delete-account.html">Delete account</a></nav>`;
 
 function page(sourceRelative: string): string {
   let html = readFileSync(join(root, sourceRelative), 'utf8');
@@ -48,13 +48,24 @@ function page(sourceRelative: string): string {
 mkdirSync(join(out, 'legal'), { recursive: true });
 mkdirSync(join(out, 'download'), { recursive: true });
 const pages: Record<string, string> = {
-  'legal/privacy.html': 'app/src/direct/assets/legal/privacy.html',
-  'legal/terms.html': 'app/src/direct/assets/legal/terms.html',
-  'legal/refund.html': 'app/src/direct/assets/legal/refund.html',
-  'legal/privacy-play.html': 'app/src/main/assets/legal/privacy.html',
-  'legal/terms-play.html': 'app/src/main/assets/legal/terms.html',
+  'legal/privacy.html': 'app/src/main/assets/legal/privacy.html',
+  'legal/terms.html': 'app/src/main/assets/legal/terms.html',
+  'legal/refund.html': 'app/src/main/assets/legal/refund.html',
 };
 for (const [target, source] of Object.entries(pages)) writeFileSync(join(out, target), page(source));
+
+// Google Play requires a web page where users can request account deletion without the app.
+writeFileSync(join(out, 'legal', 'delete-account.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Delete your account · e-GP Browser</title>${STYLE}</head>
+<body><header><a href="/">e-GP Browser</a></header><main>
+<h2>Delete your e-GP Browser account</h2>
+<p><b>In the app:</b> open the menu → <i>Account &amp; access</i> → <i>Delete account</i>. Deletion is immediate.</p>
+<p><b>Without the app:</b> e-mail ${values.SUPPORT_EMAIL} from the Google account you use in the app, with the subject "Delete my account". We delete it within 7 days and confirm by e-mail.</p>
+<h3>What is deleted</h3>
+<ul><li>Your account: Google account identifier, e-mail address and name</li><li>Your sign-in sessions</li><li>Your trial and lifetime access (a lifetime purchase cannot be restored after deletion)</li></ul>
+<h3>What is kept, and for how long</h3>
+<ul><li>Payment records (invoice, amount, date, PayStation transaction ID), without your name or e-mail, for as long as accounting and tax rules require</li>
+<li>A one-way keyed hash of your Google identifier and device, for up to 24 months, only to prevent repeated free trials</li></ul>
+${NAV}</main></body></html>`);
 
 copyFileSync(join(root, 'store', 'play-icon-512.png'), join(out, 'icon.png'));
 const apk = 'download/e-GP-Browser.apk';
@@ -63,7 +74,7 @@ writeFileSync(join(out, 'index.html'), `<!doctype html><html lang="en"><head><me
 <p><img src="/icon.png" alt="" width="96" height="96"></p>
 <h2>Bangladesh's e-GP portal, made easy on your phone</h2>
 <p>A secure Android browser for the public e-GP portal (www.eprocure.gov.bd): desktop-site mode, tap-friendly menus, uploads and downloads.</p>
-<p><b>Website edition:</b> 7-day free trial, then ৳250 once for lifetime access (paid securely through PayStation).
+<p>Sign in with Google for a 7-day free trial, then ৳250 once for lifetime access (paid securely through PayStation).
 ${existsSync(join(out, apk)) ? `<br><a href="/${apk}">Download the APK</a> (Android 8.0 or newer)` : '<br><i>Download coming soon.</i>'}</p>
 <p><small>e-GP Browser is an independent app. It is not made by, affiliated with or endorsed by the Government of Bangladesh, BPPA, CPTU or the e-GP portal. Support: ${values.SUPPORT_EMAIL}</small></p>
 ${NAV}</main></body></html>`);

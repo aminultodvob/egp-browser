@@ -23,7 +23,6 @@ dist/
 deploy/.env
 deploy/backend.env
 deploy/backups/
-deploy/site/
 
 # Local tooling
 .claude/

@@ -41,21 +41,6 @@ android {
         buildConfigField("String", "POLICY_EFFECTIVE_DATE", quoted(publicSetting("EGP_POLICY_EFFECTIVE_DATE")))
     }
 
-    flavorDimensions += "distribution"
-    productFlavors {
-        // Google Play: completely free. No account, trial or payment code is compiled in.
-        create("play") {
-            dimension = "distribution"
-            buildConfigField("boolean", "ACCESS_CONTROL", "false")
-        }
-        // Direct download from the developer's website: 7-day trial + ৳250 lifetime unlock via PayStation.
-        create("direct") {
-            dimension = "distribution"
-            versionNameSuffix = "-direct"
-            buildConfigField("boolean", "ACCESS_CONTROL", "true")
-        }
-    }
-
     val releaseStoreFile = signingValue("storeFile", "EGP_KEYSTORE_FILE")
     signingConfigs {
         if (releaseStoreFile != null) {
@@ -122,12 +107,12 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.webkit)
 
-    // Direct build only: account, trial and PayStation checkout.
-    "directImplementation"(libs.androidx.browser)
-    "directImplementation"(libs.androidx.credentials)
-    "directImplementation"(libs.androidx.credentials.play.services)
-    "directImplementation"(libs.googleid)
-    "directImplementation"(libs.okhttp)
+    // Account (Google sign-in), trial and PayStation checkout.
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.googleid)
+    implementation(libs.okhttp)
 
     testImplementation(libs.junit)
     testImplementation(libs.org.json)

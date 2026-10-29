@@ -15,14 +15,20 @@
     "migrate:dev": "tsx src/migrate.ts",
     "reconcile": "node dist/reconcile.js",
     "keygen": "tsx scripts/keygen.ts",
-    "test": "node --import tsx --test --test-concurrency=1 tests/paystation-client.test.ts tests/auth-trial.test.ts tests/payments.test.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "test": "node --import tsx --test --test-concurrency=1 tests/paystation-client.test.ts tests/auth-trial.test.ts tests/payments.test.ts tests/cron.test.ts tests/admin.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "grant": "node dist/grant.js"
   },
   "dependencies": {
-    "@fastify/rate-limit": "^11.2.1",
+    "@nestjs/common": "^11.2.8",
+    "@nestjs/core": "^11.2.8",
+    "@nestjs/platform-fastify": "^11.2.8",
+    "@nestjs/throttler": "^6.5.0",
     "fastify": "^5.12.7",
     "jose": "^6.2.13",
     "pg": "^8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -31,5 +37,8 @@
     "embedded-postgres": "^18.4.0-beta.17",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "fastify": "$fastify"
   }
 }

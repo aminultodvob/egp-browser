@@ -40,7 +40,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import bd.egpmobile.browser.access.AccessDecision
-import bd.egpmobile.browser.access.FlavorAccess
+import bd.egpmobile.browser.access.AppAccess
 import bd.egpmobile.browser.access.LockReason
 import bd.egpmobile.browser.databinding.ActivityMainBinding
 import bd.egpmobile.browser.databinding.ItemMenuTileBinding
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
     private val settings by lazy { BrowserSettings(this) }
     private val sessionManager = SessionManager()
     private val touchHover by lazy { TouchHoverSupport(this) }
-    private val accessGate by lazy { FlavorAccess.create(this) }
+    private val accessGate by lazy { AppAccess.create(this) }
 
     private val fileChooser = FileChooserLauncher(this) { message -> showSnackbar(message) }
     private val storagePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->

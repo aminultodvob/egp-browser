@@ -2,6 +2,20 @@
 
 Results are labelled **PASS**, **FAIL** or **NOT RUN** (with the reason). Nothing is marked as passing unless it was actually executed.
 
+## Current results (2026-10-29, single app + NestJS backend)
+
+| Suite | Result |
+|---|---|
+| Backend (NestJS 11, embedded PostgreSQL): auth, 7-day trial, checkout, verification, PayStation client, **cron endpoint**, **complimentary access** | **46/46 PASS** |
+| Backend against the real **Neon** database | PASS: migrations 001 and 002 applied; TLS 1.3 with a verified certificate; compiled server started on Neon; `/health` OK; protected routes 401 without login; forged Google token rejected; cron 401 without secret, 200 with secret; return page renders |
+| Android unit tests | **56/56 PASS** |
+| Android lint | 0 errors |
+| Builds: `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleDebugAndroidTest` | PASS |
+| Android instrumented tests | **NOT RUN this time**: the emulator could not start because the PC had only 1.3 GB of free memory. The tests compile. The previous run (same browser, lock and policy code, before the flavor merge) passed 20/20. Run `./gradlew connectedDebugAndroidTest` on a phone or a PC with more free RAM. |
+| Google sign-in end to end, real PayStation payment | NOT RUN: needs your Google OAuth client and a deployed backend (DEPLOYMENT.md) |
+
+The sections below are the detailed record of the earlier two-build version. Its browser, policy, lock and payment tests carry over unchanged.
+
 ## 1. Automated tests
 
 All results below are from runs on 2026-10-28 on Windows 11, with the emulator on an Android 14 (API 34) Google APIs x86_64 image.
