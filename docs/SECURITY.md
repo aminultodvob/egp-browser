@@ -41,7 +41,7 @@ Hosts were identified by fetching the public homepage and following its redirect
 
 ## Known security limitations
 
-* **DownloadManager forwards request headers on redirects.** If an e-GP download URL redirects to a different host, Android's DownloadManager re-sends the `Cookie` header to that host. Real browsers would not. The app cannot inspect redirects before DownloadManager follows them. The risk is limited to redirects chosen by the e-GP server itself.
+* *(Fixed in 1.2.2)* Downloads no longer use Android's DownloadManager: the app follows redirects itself (HTTPS only, at most 5) and sends the session cookie only to trusted e-GP hosts.
 * **WebView updates come from the Play Store.** The rendering engine's security depends on *Android System WebView* (or Chrome) being up to date on the device.
 * **The server-side session survives "Sign out of this device"** until it expires, unless the user presses the portal's own Logout first.
 * **Third-party cookies** are off by default and can be turned on in Settings. Turn them on only if a verified embedded payment or sign-in page requires them.

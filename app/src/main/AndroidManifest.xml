@@ -8,6 +8,8 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <!-- Android 13+: download progress and "tap to open" notifications (asked at the first download). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Package visibility (Android 11+): apps that can open external links and downloaded files. -->
     <queries>
@@ -100,6 +102,23 @@
                     android:scheme="egpbrowser" />
             </intent-filter>
         </activity>
+
+        <!-- Built-in viewer so downloaded PDFs open even without a PDF app. -->
+        <activity
+            android:name=".PdfViewerActivity"
+            android:exported="false"
+            android:parentActivityName=".DownloadsActivity" />
+
+        <!-- Android 8-9: shares files saved in Downloads/e-GP with viewer apps (MediaStore is used on 10+). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity
             android:name=".DownloadsActivity"

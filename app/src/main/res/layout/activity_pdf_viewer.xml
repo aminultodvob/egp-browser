@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurfaceContainerLow" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurfaceContainerHighest">
+
+        <HorizontalScrollView
+            android:id="@+id/horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingVertical="8dp"
+                tools:ignore="ScrollViewSize" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/pageIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_mode_chip"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="6dp"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSecondaryContainer"
+            android:visibility="gone" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+        <LinearLayout
+            android:id="@+id/errorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorSurface"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/errorMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/errorOpenWith"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/download_open_with" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

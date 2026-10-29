@@ -63,9 +63,6 @@
     <string name="action_zoom_out">Zoom out</string>
     <string name="action_fullscreen">Full screen</string>
     <string name="action_downloads">Downloads</string>
-    <string name="action_open_external">Open in another browser</string>
-    <string name="action_clear_data">Clear browsing data…</string>
-    <string name="action_sign_out">Sign out of this device…</string>
     <string name="action_settings">Settings</string>
 
     <!-- Rendering mode -->
@@ -137,7 +134,6 @@
     <!-- Downloads -->
     <string name="downloads_title">Downloads</string>
     <string name="downloads_empty">Files you download from e-GP appear here.\nThey are saved in Downloads/e-GP.</string>
-    <string name="download_notification_description">e-GP Browser</string>
     <string name="download_started">Downloading %1$s</string>
     <string name="download_view">View</string>
     <string name="download_open">Open</string>
@@ -147,7 +143,6 @@
     <string name="download_remove_message">The file stays in your Downloads/e-GP folder.</string>
     <string name="download_untitled">Untitled file</string>
     <string name="download_missing">The file is no longer available</string>
-    <string name="download_no_viewer">No installed app can open this file type</string>
     <string name="download_failed">The download could not be started</string>
     <string name="download_invalid">Invalid download link</string>
     <string name="download_unsupported">This file is generated inside the page and cannot be downloaded by this browser. See the troubleshooting guide.</string>
@@ -155,15 +150,30 @@
     <string name="download_retry_from_page">Download the file again from the e-GP page</string>
     <string name="download_blocked_title">Download blocked</string>
     <string name="download_blocked_executable">This file is an app or program. e-GP Browser never downloads executable files.</string>
-    <string name="download_status_pending">Waiting to start…</string>
     <string name="download_status_running">%1$d%% of %2$s</string>
     <string name="download_status_running_unknown">%1$s downloaded</string>
-    <string name="download_status_paused">Paused, waiting for network</string>
     <string name="download_status_done">Completed · %1$s</string>
-    <string name="download_failed_http">Failed: server error %1$d. The link may have expired or your session ended. Download it again from the page.</string>
+    <string name="download_failed_http">Failed: the e-GP server answered with error %1$d. Try again from the page.</string>
+    <string name="download_failed_session">Failed (error %1$d): your e-GP session has probably ended. Sign in on the portal again, then download the file again from the page.</string>
+    <string name="download_failed_missing">Failed (error %1$d): the file is no longer available on e-GP.</string>
+    <string name="download_failed_page">e-GP sent a web page instead of the document, so nothing was saved. Your portal session may have ended: sign in again on the portal and download the file again from the page.</string>
+    <string name="download_failed_network">Failed: the connection was lost. Tap Retry.</string>
+    <string name="download_failed_blocked">Blocked: the download tried to leave e-GP over an insecure link, or the file is a program.</string>
+    <string name="download_failed_too_large">Failed: the file is larger than 500 MB.</string>
+    <string name="download_failed_interrupted">Stopped because the app was closed. Tap Retry.</string>
+    <string name="download_completed">Downloaded %1$s</string>
+    <string name="download_share">Share</string>
+    <string name="download_no_viewer_for">No installed app can open %1$s files. Install a document viewer (for example a Word/Excel app) from Google Play.</string>
+    <string name="download_channel">Downloads</string>
+    <string name="download_notification_running">Downloading…</string>
+    <string name="download_notification_done">Download complete. Tap to open.</string>
+    <string name="pdf_viewer_title">PDF</string>
+    <string name="pdf_page_indicator">%1$d / %2$d</string>
+    <string name="pdf_page_description">Page %1$d of %2$d</string>
+    <string name="pdf_error_empty">This PDF has no pages.</string>
+    <string name="pdf_error_protected">This PDF is password-protected. Open it with another app to enter the password.</string>
+    <string name="pdf_error_corrupt">This file could not be read as a PDF. It may be damaged; try downloading it again, or open it with another app.</string>
     <string name="download_failed_space">Failed: not enough storage space</string>
-    <string name="download_failed_storage">Failed: storage is not available</string>
-    <string name="download_failed_redirects">Failed: too many redirects</string>
     <string name="download_failed_generic">Failed. Tap Retry or download again from the page.</string>
 
     <!-- Settings -->

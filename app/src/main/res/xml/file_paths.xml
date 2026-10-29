@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 8–9 only: downloads saved in the public Downloads/e-GP folder are shared through this. -->
+<paths>
+    <external-path name="downloads" path="Download/e-GP/" />
+</paths>

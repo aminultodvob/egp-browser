@@ -2,6 +2,16 @@
 
 Results are labelled **PASS**, **FAIL** or **NOT RUN** (with the reason). Nothing is marked as passing unless it was actually executed.
 
+## Download fix (1.2.2, 2026-10-29)
+
+| Check | Result |
+|---|---|
+| `ContentSnifferTest` (PDF / ZIP-Office / OLE / images detected; HTML error pages recognised; names and MIME types fixed) | PASS (7 tests; 63 unit tests in total) |
+| `DownloadPipelineTest`, live portal on an Android 14 emulator: the public e-GP Guidelines PDF is saved as a real PDF and opens in the built-in viewer | PASS |
+| `DownloadPipelineTest`: a portal web page requested as a document is refused, nothing saved | PASS |
+| All instrumented tests (lock, browser, portal, WebView security, downloads) | **14/14 PASS** |
+| Lint | 0 errors |
+
 ## Current results (2026-10-29, single app + NestJS backend)
 
 | Suite | Result |

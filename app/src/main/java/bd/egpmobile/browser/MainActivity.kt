@@ -4,11 +4,13 @@ import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
+import android.os.Build
 import android.os.Message
 import android.security.KeyChain
 import android.view.KeyEvent
@@ -29,6 +31,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
         if (download == null) return@registerForActivityResult
         if (granted) startDownload(download) else showSnackbar(R.string.download_permission_denied)
     }
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
     private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == SettingsActivity.RESULT_CLEAR_DATA) showClearDataDialog()
     }
@@ -239,6 +243,11 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect(::render)
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                DownloadHandler.Engine.get(this@MainActivity).events.collect(::onDownloadEvent)
             }
         }
     }
@@ -513,9 +522,12 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
 
     private fun startDownload(download: PendingDownload) {
         when (val result = downloadHandler.enqueue(download)) {
-            is DownloadHandler.Result.Started -> snackbar(getString(R.string.download_started, result.fileName))
-                .setAction(R.string.download_view) { startActivity(Intent(this, DownloadsActivity::class.java)) }
-                .show()
+            is DownloadHandler.Result.Started -> {
+                requestNotificationPermissionOnce()
+                snackbar(getString(R.string.download_started, result.fileName))
+                    .setAction(R.string.download_view) { startActivity(DownloadsActivity.intent(this)) }
+                    .show()
+            }
             DownloadHandler.Result.NeedsStoragePermission -> {
                 pendingDownload = download
                 storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -530,7 +542,29 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
                 DownloadPolicy.Rejection.UNSUPPORTED_SCHEME -> showSnackbar(R.string.download_unsupported)
                 DownloadPolicy.Rejection.INVALID_URL -> showSnackbar(R.string.download_invalid)
             }
-            DownloadHandler.Result.Failed -> showSnackbar(R.string.download_failed)
+        }
+    }
+
+    /** Android 13+: ask once, at the first download, so progress and "tap to open" notifications can show. */
+    private fun requestNotificationPermissionOnce() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        if (prefs.getBoolean(KEY_NOTIFICATIONS_ASKED, false)) return
+        prefs.edit { putBoolean(KEY_NOTIFICATIONS_ASKED, true) }
+        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    /** Completed downloads offer Open (PDFs open in the built-in viewer); failures say why. */
+    private fun onDownloadEvent(event: DownloadEvent) {
+        when (event) {
+            is DownloadEvent.Completed -> snackbar(getString(R.string.download_completed, event.record.fileName))
+                .setAction(R.string.download_open) { DocumentOpener.open(this, event.record) }
+                .show()
+            is DownloadEvent.Failed -> snackbar(DocumentOpener.failureText(this, event.record))
+                .setAction(R.string.download_view) { startActivity(DownloadsActivity.intent(this)) }
+                .show()
+            is DownloadEvent.Progress -> Unit
         }
     }
 
@@ -884,5 +918,6 @@ class MainActivity : AppCompatActivity(), BrowserWebViewClient.Host, BrowserChro
         private const val MAX_POPUPS = 3
         private const val FADE_MS = 220L
         private const val KEY_DISCLAIMER_ACCEPTED = "disclaimer_accepted_v1"
+        private const val KEY_NOTIFICATIONS_ASKED = "notifications_asked_v1"
     }
 }
